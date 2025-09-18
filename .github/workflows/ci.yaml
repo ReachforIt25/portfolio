@@ -1,0 +1,50 @@
+name: Resume CI Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build -t biladocker2009/portfolio .
+    - name: push image
+      run: |
+          docker login -u 
+
+     
+      run: docker build . --file Dockerfile --tag my-image-name:${{github.run_number}}
+    - name: Build latest
+      run: docker build . --file Dockerfile --tag my-image-name
+    - name: Login to Docker hub
+      run: docker login -u ${{secrets.REGISTRY_USERNAME}} -p ${{secrets.REGISTRY_PASS}}
+    - name: tag image
+      run: docker tag my-image-name:${{github.run_number}} ${{secrets.REGISTRY_USERNAME}}/my-image-name:${{github.run_number}}
+    - name: Push to registry
+      run: docker push  ${{secrets.REGISTRY_USERNAME}}/my-image-name:${{github.run_number}}
+      
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: SSH to Server
+  #       uses: appleboy/ssh-action@v1.0.3
+  #       with:
+  #         host: ${{secrets.HOST}}
+  #         username: ${{vars.USERNAME}}
+  #         key: ${{secrets.KEY}}
+  #         script: |
+  #           docker stop resume || echo ""
+  #           docker rm resume || echo ""
+  #           docker run -d --name resume -p 8081:5001 ${{secrets.REGISTRY_USERNAME}}/my-image-name:${{github.run_number}}
+
+
+
