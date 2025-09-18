@@ -18,18 +18,19 @@ jobs:
       run: docker build -t biladocker2009/portfolio .
     - name: push image
       run: |
-          docker login -u 
+          docker login -u ${{secrets.REGISTRY_USERNAME}} -p ${{secrets.REGISTRY_PASS}}
+          docker push biladocker2009/portfolio
 
      
-      run: docker build . --file Dockerfile --tag my-image-name:${{github.run_number}}
-    - name: Build latest
-      run: docker build . --file Dockerfile --tag my-image-name
-    - name: Login to Docker hub
-      run: docker login -u ${{secrets.REGISTRY_USERNAME}} -p ${{secrets.REGISTRY_PASS}}
-    - name: tag image
-      run: docker tag my-image-name:${{github.run_number}} ${{secrets.REGISTRY_USERNAME}}/my-image-name:${{github.run_number}}
-    - name: Push to registry
-      run: docker push  ${{secrets.REGISTRY_USERNAME}}/my-image-name:${{github.run_number}}
+    #   run: docker build . --file Dockerfile --tag my-image-name:${{github.run_number}}
+    # - name: Build latest
+    #   run: docker build . --file Dockerfile --tag my-image-name
+    # - name: Login to Docker hub
+    #   run: docker login -u ${{secrets.REGISTRY_USERNAME}} -p ${{secrets.REGISTRY_PASS}}
+    # - name: tag image
+    #   run: docker tag my-image-name:${{github.run_number}} ${{secrets.REGISTRY_USERNAME}}/my-image-name:${{github.run_number}}
+    # - name: Push to registry
+    #   run: docker push  ${{secrets.REGISTRY_USERNAME}}/my-image-name:${{github.run_number}}
       
   # deploy:
   #   needs: build
